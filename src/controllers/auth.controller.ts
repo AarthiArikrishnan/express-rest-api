@@ -2,11 +2,10 @@ import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 import { User } from "../models/user.model";
+import jwt from "jsonwebtoken";
 
 export const register = async (req: Request, res: Response) => {
-  console.log("Request Body:", req.body);
-
-  const { name, email, password } = req.body;
+  const { name, email, password } = req?.body;
 
   if (!name || !email || !password) {
     return res.status(400).json({ message: "All fields are required" });
@@ -41,4 +40,27 @@ export const verify = async (req: Request, res: Response) => {
   await user.save();
 
   res.json({ message: "Email verified" });
+};
+
+export const login = async (req: Request, res: Response) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(400).json({ message: "email and password are requierd" });
+  }
+
+  const user = await User.findOne({ email });
+  if (!user) return res.status(400).json({ message: "Invalid credentials" });
+
+  const match = await bcrypt.compare(password, user.password);
+
+  if (!match) return res.status(400).json({ message: "Invalid credentials" });
+
+  if (!user.isVerified)
+    return res.status(400).json({ message: "Email not verified" });
+
+  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET as string, {
+    expiresIn: "1h",
+  });
+
+  res.json({ token });
 };
