@@ -11,3 +11,8 @@ export const createPost = async (postData: any, userId: string) => {
 
     return post;
 };
+
+export const getAllPosts = async (userId: string) => {
+    const posts = await Post.find({ user: userId })
+    return posts;
+}
