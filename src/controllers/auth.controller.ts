@@ -5,10 +5,6 @@ export const register = async (req: Request, res: Response) => {
   try {
     const { name, email, password } = req?.body;
 
-    if (!name || !email || !password) {
-      return res.status(400).json({ message: "All fields are required" });
-    }
-
     await AuthService.registerUser({ name, email, password });
     // TODO: Send verification email with the token (handled in service, potential improvement to return token/logic here)
 
