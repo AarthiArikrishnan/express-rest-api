@@ -43,3 +43,30 @@ export const getpost = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Failed to post" });
   }
 }
+export const updatePost = async (req: Request, res: Response) => {
+  try {
+
+    const userId = req?.user?.id as unknown as string
+    const postId = req.params.id
+    const { title, content } = req.body
+
+    const post = await PostService.getPostByID(postId)
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" })
+    }
+
+    if (post.user.toString() !== userId) {
+      return res.status(403).json({ message: "Unauthorized" })
+    }
+
+    const updatedPost = await PostService.updatePost(postId, { title, content })
+    res.status(200).json(updatedPost)
+
+  } catch (error) {
+    logger.error({ error }, "error updating the post");
+    res.status(500).json({ message: "failed to update the post" })
+
+  }
+
+}

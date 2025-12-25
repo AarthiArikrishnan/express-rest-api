@@ -16,7 +16,12 @@ export const getAllPosts = async (userId: string) => {
     const posts = await Post.find({ user: userId })
     return posts;
 }
-export const getPostByID = async (postId:string) => {
-    const post=await Post.findById(postId)
+export const getPostByID = async (postId: string) => {
+    const post = await Post.findById(postId)
     return post;
+}
+
+export const updatePost = async (postId: string, postData: any) => {
+    const post = await Post.findByIdAndUpdate(postId, postData)
+    return post
 }

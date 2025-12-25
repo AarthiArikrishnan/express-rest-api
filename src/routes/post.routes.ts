@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { createPost, getAllPosts, getpost } from "../controllers/post.controller";
+import { createPost, getAllPosts, getpost, updatePost } from "../controllers/post.controller";
 import { authMiddleware } from "../middleware/auth.middleware";
 import { validateBody, validateParams } from "../middleware/validate.middleware";
-import { createPostSchema, idParamSchema } from "../validation/post.schema";
+import { createPostSchema, idParamSchema, patchPostSchema } from "../validation/post.schema";
 
 const router = Router();
 
@@ -18,12 +18,17 @@ router.get("/", authMiddleware, getAllPosts);
 router.put(
     "/:id",
     authMiddleware,
-
+    validateParams(idParamSchema),
+    validateBody(createPostSchema),
+    updatePost
 );
 
 router.patch(
     "/:id",
     authMiddleware,
+    validateParams(idParamSchema),
+    validateBody(patchPostSchema),
+    updatePost
 );
 
 // DELETE
