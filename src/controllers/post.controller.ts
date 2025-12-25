@@ -24,7 +24,7 @@ export const getAllPosts = async (req: Request, res: Response) => {
 }
 export const getpost = async (req: Request, res: Response) => {
   try {
-    const post = await PostService.getPostByID(req.params.postId)
+    const post = await PostService.getPostByID(req.params.id)
 
     if (!post) {
       return res.status(404).json({ message: "Post not found" })
@@ -35,7 +35,7 @@ export const getpost = async (req: Request, res: Response) => {
     if (post.user.toString() !== userId) {
       return res.status(403).json({ message: "Unauthorized" })
     }
-    
+
     res.status(200).json(post)
 
   } catch (error) {
