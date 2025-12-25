@@ -16,3 +16,7 @@ export const getAllPosts = async (userId: string) => {
     const posts = await Post.find({ user: userId })
     return posts;
 }
+export const getPostByID = async (postId:string) => {
+    const post=await Post.findById(postId)
+    return post;
+}

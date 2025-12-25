@@ -22,3 +22,24 @@ export const getAllPosts = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Failed to get posts" });
   }
 }
+export const getpost = async (req: Request, res: Response) => {
+  try {
+    const post = await PostService.getPostByID(req.params.postId)
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" })
+    }
+
+    const userId = req?.user?.id as unknown as string
+
+    if (post.user.toString() !== userId) {
+      return res.status(403).json({ message: "Unauthorized" })
+    }
+    
+    res.status(200).json(post)
+
+  } catch (error) {
+    logger.error({ error }, "error getting the post");
+    res.status(500).json({ message: "Failed to post" });
+  }
+}
